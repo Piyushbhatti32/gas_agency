@@ -1,0 +1,76 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Testing
+/coverage
+/.nyc_output
+/cypress/videos/
+/cypress/screenshots/
+/cypress/downloads/
+
+# Next.js
+/.next/
+/out/
+.next/
+next-env.d.ts
+
+# Production
+/build
+/dist
+
+# Database
+*.db
+*.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Debug & Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+logs/
+server.log
+dev.log
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.pem
+.project
+.classpath
+*.launch
+.settings/
+
+# Misc
+.vercel
+.cache/
+public/sw.js*
+public/workbox-*
+.serverless/
+.eslintcache
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Project specific
+local-*
+.claude
+.z-ai-config
+test/
+prompt/

@@ -1,0 +1,32 @@
+Gas Agency System
+
+Project Title: Gas Agency System
+
+Technologies: HTML, CSS, JS, Firebase
+Project Difficulty Level: Medium
+
+Problem Statement:
+A client-facing online gas booking system enabling easy booking and payment for gas cylinders. Eliminates traditional phone-based ordering and delays. Admin can manage client accounts, approve/reject bookings, and set public notices.
+
+Project Features:
+- Two login accounts: User and Admin
+- User registration required
+- Payment: Cash on delivery or Paytm QR
+- Cylinder Booking: Request new cylinder when exhausted
+- Booking History: User can view past bookings
+- Email Notifications: Account balance and transaction acknowledgments
+
+Evaluation Metrics:
+- Modular Code: Safe, Testable, Maintainable, Portable
+- GitHub: Public repo with Readme, proper documentation, code standards
+- Use Firebase
+- Logging: Use JS or Python logging libraries for all actions
+
+Deployment & Optimization:
+- Host on cloud, edge, or local with justification
+- Optimize code and architecture; mention in submission
+- Include test cases
+
+Submission:
+- Upload code to GitHub, submit repo link
+- Submit detailed project report based on provided sample

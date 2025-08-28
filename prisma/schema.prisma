@@ -1,0 +1,171 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String
+  password        String
+  role            Role     @default(USER)
+  phoneNumber     String?
+  address         String?
+  city            String?
+  state           String?
+  pincode         String?
+  dateOfBirth     DateTime?
+  aadharNumber    String?  @unique
+  barrelsRemaining Int     @default(12)
+  defaultVendorId String?  // Default agency for this user
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  bookings        Booking[]
+  logs            Log[]
+  defaultVendor   Agency?  @relation("UserDefaultVendor", fields: [defaultVendorId], references: [id])
+  
+  @@map("users")
+}
+
+model Agency {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String   // Owner/Contact person name
+  password        String
+  businessName    String
+  businessAddress String
+  city            String
+  state           String
+  pincode         String
+  contactNumber   String
+  alternateNumber String?
+  gstNumber       String?  @unique
+  licenseNumber   String   @unique
+  panNumber       String?  @unique
+  cylinderPrice   Float    @default(800.0)
+  deliveryRadius  Int      @default(10) // in KM
+  minOrderAmount  Float    @default(0.0)
+  deliveryCharges Float    @default(0.0)
+  workingHours    String   @default("9:00 AM - 6:00 PM")
+  establishedYear Int?
+  description     String?
+  isActive        Boolean  @default(true)
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  bookings        Booking[]
+  defaultUsers    User[]   @relation("UserDefaultVendor")
+  
+  @@map("agencies")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  userId        String
+  agencyId      String        // Which agency this booking is for
+  status        BookingStatus @default(PENDING)
+  paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(PENDING)
+  amount        Float?        // Amount for the booking
+  isExtra       Boolean       @default(false)
+  approvedAt    DateTime?
+  rejectedAt    DateTime?
+  rejectionReason String?     // Reason for rejection
+  adminRejectionReason String? // Admin rejection reason
+  scheduledFor  DateTime?     // When the delivery is scheduled
+  deliveredAt   DateTime?
+  deliveryNotes String?       // Notes from delivery person
+  deliveryAddress String?     // Delivery address
+  contactNumber String?       // Contact number for delivery
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agency        Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  payment       Payment?
+  
+  @@map("bookings")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("notifications")
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+  
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@map("logs")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  bookingId         String        @unique
+  razorpayOrderId   String        @unique
+  razorpayPaymentId String?       @unique
+  razorpaySignature String?
+  amount            Float
+  currency          String        @default("INR")
+  status            PaymentStatus @default(PENDING)
+  paymentMethod     String?       // Actual payment method used (card, netbanking, upi, etc.)
+  failureReason     String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  
+  booking           Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  @@map("payments")
+}
+
+enum Role {
+  USER
+  AGENCY
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DELIVERED
+}
+
+enum PaymentMethod {
+  COD
+  ONLINE
+  PAYTM_QR
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
