@@ -37,7 +37,8 @@ export async function POST(request) {
     const notification = await db.notification.create({
       data: {
         title,
-        message
+        message,
+        isActive: true
       }
     })
 

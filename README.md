@@ -1,141 +1,184 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# Gas Agency Management System
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+A modern web application for managing gas cylinder bookings, agencies, and user interactions. Built with Next.js and Prisma.
 
-## ✨ Technology Stack
+## Features
 
-This scaffold provides a robust foundation built with:
+### For Users
+- 📱 User registration and profile management
+- 🛒 Book gas cylinders with multiple payment options
+  - Cash on Delivery (COD)
+  - Online Payment (Razorpay)
+  - Paytm QR
+- 📊 Track cylinder bookings and delivery status
+- 🔔 Real-time notifications for booking updates
+- 📋 View booking history and remaining barrel quota
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### For Agencies
+- � Agency registration and profile management
+- � Manage cylinder deliveries and inventory
+- � Track customer bookings and history
+- � Dashboard with business analytics
+- � Booking status management
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### For Administrators
+- � User management (block/unblock, reset barrels, delete)
+- 🏢 Agency management and oversight
+- 📢 Send notifications to users
+- � System-wide analytics and monitoring
+- 🔧 Configuration management
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+## Tech Stack
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+- **Frontend**: Next.js App Router, React, TailwindCSS, shadcn/ui
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: SQLite (easily upgradable to PostgreSQL/MySQL)
+- **Authentication**: Custom JWT-based auth
+- **Payment**: Razorpay integration
+- **UI Components**: 
+  - Dialog
+  - ScrollArea
+  - Tabs
+  - Cards
+  - Forms
+  - Notifications
+  - And more...
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+## Getting Started
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### Installation
 
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
-
-## 🚀 Quick Start
-
+1. Clone the repository:
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
+git clone https://github.com/yourusername/gas_agency.git
+cd gas_agency
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-## 🤖 Powered by Z.ai
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+4. Set up the database:
+```bash
+npx prisma migrate deploy
+```
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+5. Run the development server:
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+### Environment Variables
 
-## 📁 Project Structure
+Required environment variables in `.env`:
+
+```env
+# Database
+DATABASE_URL="file:./custom.db"
+
+# JWT
+JWT_SECRET=your-jwt-secret
+
+# Razorpay (for payments)
+RAZORPAY_KEY_ID=your-key-id
+RAZORPAY_KEY_SECRET=your-key-secret
+
+# Base URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+## Project Structure
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                    # Next.js App Router pages
+│   ├── admin/             # Admin dashboard and features
+│   ├── agency/            # Agency dashboard and features
+│   ├── api/               # API routes
+│   └── user/              # User pages
+├── components/            # React components
+│   ├── ui/               # UI components
+│   └── Navigation.jsx    # Main navigation
+├── hooks/                # Custom React hooks
+└── lib/                  # Utilities and configurations
+    ├── db.js            # Prisma client
+    ├── email.js         # Email utilities
+    └── razorpay.js      # Payment integration
 ```
 
-## 🎨 Available Features & Components
+## API Routes
 
-This scaffold includes a comprehensive set of modern web development tools:
+- `/api/auth/*` - Authentication endpoints
+- `/api/admin/*` - Admin management endpoints
+- `/api/agency/*` - Agency management endpoints
+- `/api/booking/*` - Booking management endpoints
+- `/api/notifications/*` - Notification endpoints
+- `/api/payment/*` - Payment processing endpoints
+- `/api/user/*` - User management endpoints
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+## Production Deployment
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+1. Build the application:
+```bash
+npm run build
+# or
+yarn build
+```
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+2. Start the production server:
+```bash
+npm start
+# or
+yarn start
+```
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+## Security Considerations
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+- 🔒 All sensitive routes are protected with authentication
+- �️ Input validation on all endpoints
+- 🔐 Secure password hashing with bcrypt
+- 📝 Comprehensive API logging
+- 🚫 Rate limiting on sensitive endpoints
+- 🔒 Protected environment variables
 
-## 🤝 Get Started with Z.ai
+## Database Migrations
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+Run migrations in development:
+```bash
+npx prisma migrate dev
+```
 
----
+Apply migrations in production:
+```bash
+npx prisma migrate deploy
+```
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is proprietary and confidential. All rights reserved.
+
+## Support
+
+For support, please contact your system administrator.

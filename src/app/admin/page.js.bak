@@ -30,28 +30,10 @@ export default function AdminDashboard() {
   const [showUserDialog, setShowUserDialog] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showResetBarrelsConfirm, setShowResetBarrelsConfirm] = useState(false)
+  // Agency management states
   const [showVerifyAgencyDialog, setShowVerifyAgencyDialog] = useState(false)
   const [selectedAgency, setSelectedAgency] = useState(null)
-  const { toast } = useToast()
   
-  useEffect(() => {
-    // Check if admin is logged in
-    const userData = localStorage.getItem("user")
-    if (!userData) {
-      window.location.href = "/"
-      return
-    }
-
-    const parsedUser = JSON.parse(userData)
-    if (parsedUser.role !== "ADMIN") {
-      window.location.href = "/dashboard"
-      return
-    }
-
-    setAdmin(parsedUser)
-    fetchAdminData()
-  }, [])
-
   const handleVerifyAgency = async (agencyId) => {
     try {
       const response = await fetch(`/api/admin/agency/${agencyId}/verify`, {
@@ -104,6 +86,25 @@ export default function AdminDashboard() {
       })
     }
   }
+  const { toast } = useToast()
+
+  useEffect(() => {
+    // Check if admin is logged in
+    const userData = localStorage.getItem("user")
+    if (!userData) {
+      window.location.href = "/"
+      return
+    }
+
+    const parsedUser = JSON.parse(userData)
+    if (parsedUser.role !== "ADMIN") {
+      window.location.href = "/dashboard"
+      return
+    }
+
+    setAdmin(parsedUser)
+    fetchAdminData()
+  }, [])
 
   const fetchAdminData = async () => {
     try {
@@ -348,6 +349,33 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleResetTestData = async () => {
+    try {
+      const response = await fetch('/api/reset-and-setup', {
+        method: 'POST'
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Test data has been reset successfully",
+        })
+        fetchAdminData()
+      } else {
+        const data = await response.json()
+        throw new Error(data.error || "Failed to reset test data")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to reset test data",
+        variant: "destructive"
+      })
+    } finally {
+      setShowResetDataConfirm(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -364,10 +392,12 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div className="grid md:grid-cols-4 gap-6 flex-1">
+    <>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          {/* Stats Overview */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="grid md:grid-cols-4 gap-6 flex-1">
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm font-medium">Regular Users</CardTitle>
@@ -414,13 +444,63 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <Tabs defaultValue="bookings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="bookings">Manage Bookings</TabsTrigger>
-            <TabsTrigger value="users">Regular Users</TabsTrigger>
-            <TabsTrigger value="agencies">Gas Agencies</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          </TabsList>
+        <div className="container mx-auto px-4 py-8">
+          {/* Stats Overview */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="grid md:grid-cols-4 gap-6 flex-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Regular Users</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-blue-600">{users.length}</div>
+                  <p className="text-sm text-gray-600">registered users</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Gas Agencies</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-green-600">{agencies.length}</div>
+                  <p className="text-sm text-gray-600">registered agencies</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Pending Bookings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-yellow-600">
+                    {bookings.filter(b => b.status === "PENDING").length}
+                  </div>
+                  <p className="text-sm text-gray-600">awaiting approval</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Active Notifications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-purple-600">
+                    {notifications.filter(n => n.isActive).length}
+                  </div>
+                  <p className="text-sm text-gray-600">active notifications</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <Tabs defaultValue="bookings" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="bookings">Manage Bookings</TabsTrigger>
+              <TabsTrigger value="users">Regular Users</TabsTrigger>
+              <TabsTrigger value="agencies">Gas Agencies</TabsTrigger>
+              <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            </TabsList>
 
           <TabsContent value="bookings">
             <Card>
@@ -631,7 +711,7 @@ export default function AdminDashboard() {
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
                               Registered {new Date(agency.createdAt).toLocaleDateString()}
-                            </p>
+                          </p>
                           </div>
                           <div className="flex flex-col gap-2">
                             <Badge variant="outline" className="ml-2">
@@ -662,6 +742,12 @@ export default function AdminDashboard() {
                       </div>
                     ))
                   )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -727,8 +813,7 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-
-      {/* Dialogs */}
+      
       <ConfirmationDialog
         open={showRejectDialog}
         onOpenChange={setShowRejectDialog}
@@ -818,6 +903,7 @@ export default function AdminDashboard() {
           setSelectedAgency(null)
         }}
       />
-    </div>
+      </div>
+    </>
   )
 }

@@ -7,6 +7,11 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.npm
+.pnpm
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Testing
 /coverage
@@ -14,27 +19,40 @@
 /cypress/videos/
 /cypress/screenshots/
 /cypress/downloads/
+.coverage
+.jest
+__snapshots__/
+*.snap
 
 # Next.js
 /.next/
 /out/
 .next/
 next-env.d.ts
+.swc/
+.turbo
 
 # Production
 /build
 /dist
+/storybook-static
 
 # Database
 *.db
 *.db-journal
-prisma/*.db
-prisma/*.db-journal
+/prisma/*.db
+/prisma/*.db-journal
+/prisma/migrations/dev/
+.prisma/
 
 # Environment
 .env
 .env.*
 !.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Debug & Logs
 npm-debug.log*
@@ -43,8 +61,7 @@ yarn-error.log*
 .pnpm-debug.log*
 *.log
 logs/
-server.log
-dev.log
+debug.log
 
 # IDEs and editors
 .idea/
@@ -57,6 +74,10 @@ dev.log
 .classpath
 *.launch
 .settings/
+*.sublime-workspace
+*.sublime-project
+.history/
+*.code-workspace
 
 # Misc
 .vercel
@@ -67,10 +88,26 @@ public/workbox-*
 .eslintcache
 tsconfig.tsbuildinfo
 *.tsbuildinfo
+.netlify/
 
-# Project specific
+# Build system
+.rollup.cache/
+.parcel-cache/
+.webpack/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+tmp/
+temp/
+
+# Local development
+*.local
 local-*
-.claude
-.z-ai-config
-test/
-prompt/
+.dev/
+.local/
+
+# Payment QR codes and sensitive files
+/public/paytm-qr.png
+/public/payment-qr.png

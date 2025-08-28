@@ -18,7 +18,6 @@ export default function Dashboard() {
   const [user, setUser] = useState(null)
   const [agencies, setAgencies] = useState([])
   const [currentBookings, setCurrentBookings] = useState([])
-  const [notifications, setNotifications] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isBooking, setIsBooking] = useState(false)
   const [bookingForm, setBookingForm] = useState({
@@ -96,20 +95,6 @@ export default function Dashboard() {
       const bookingsData = await bookingsResponse.json()
       console.log("Bookings data:", bookingsData)
       setCurrentBookings(bookingsData.currentBookings || [])
-
-      // Fetch notifications
-      const notificationsResponse = await fetch("/api/notifications")
-      console.log("Notifications response status:", notificationsResponse.status)
-      
-      if (!notificationsResponse.ok) {
-        const errorData = await notificationsResponse.json()
-        console.error("Notifications API error:", errorData)
-        throw new Error(errorData.error || "Failed to fetch notifications")
-      }
-      
-      const notificationsData = await notificationsResponse.json()
-      console.log("Notifications data:", notificationsData)
-      setNotifications(notificationsData.notifications || [])
     } catch (error) {
       console.error("Error fetching data:", error)
       toast({
@@ -209,22 +194,6 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Notifications */}
-        {notifications.length > 0 && (
-          <div className="mb-6 animate-fade-in-up-1">
-            <h2 className="text-lg font-semibold mb-3">Notifications</h2>
-            <div className="space-y-3">
-              {notifications.map((notification) => (
-                <Alert key={notification.id} className="hover:shadow-md transition-shadow">
-                  <AlertDescription>
-                    <strong>{notification.title}:</strong> {notification.message}
-                  </AlertDescription>
-                </Alert>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* User Info */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="hover:scale-105 transition-transform duration-300 animate-fade-in-up-1">

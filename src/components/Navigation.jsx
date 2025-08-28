@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { User, LogOut, Home, History, Users, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import { NotificationCenter } from './ui/notification-center';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -57,6 +58,11 @@ export default function Navigation() {
             </div>
           )}
           
+          {/* Notification Center */}
+          {user?.role !== 'ADMIN' && (
+            <NotificationCenter />
+          )}
+
           {/* Links based on user role */}
           <div className="flex items-center gap-2">
             {user?.role === 'USER' && (
