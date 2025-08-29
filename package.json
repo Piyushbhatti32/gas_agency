@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --exec \"node --experimental-specifier-resolution=node server.js\" --watch server.js --watch src --ext js,jsx",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "NODE_ENV=production node server.js 2>&1 | tee server.log",
     "lint": "next lint",
     "test": "jest",
