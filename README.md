@@ -97,10 +97,6 @@ JWT_SECRET=your-jwt-secret
 RAZORPAY_KEY_ID=your-key-id
 RAZORPAY_KEY_SECRET=your-key-secret
 
-# Base URL
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
 ## Project Structure
 
 ```

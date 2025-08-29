@@ -12,7 +12,6 @@ env:
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
   RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
   RAZORPAY_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
-  NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
 jobs:
   test:

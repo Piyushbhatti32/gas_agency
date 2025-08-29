@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db";
-import { hash } from "bcrypt";
+import { db as prisma } from "@/lib/db";
+import { hash } from "bcryptjs";
 
 export async function POST(req) {
   try {

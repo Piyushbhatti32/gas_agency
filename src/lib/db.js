@@ -9,3 +9,7 @@ export const db =
   })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+
+// Export for compatibility
+export const prisma = db;
+export default db;
