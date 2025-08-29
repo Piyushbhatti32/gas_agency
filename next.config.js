@@ -10,17 +10,9 @@ const nextConfig = {
   // Vercel settings
   output: 'standalone',
   // Allow database file to be copied to output
-  outputFileTracing: true,
   typescript: {
     ignoreBuildErrors: true
   },
-  sentry: {
-    // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
-    // for client-side builds. (This will be the default starting in
-    // `@sentry/nextjs` version 8.0.0.) See:
-    // https://webpack.js.org/configuration/devtool/
-    hideSourceMaps: true,
-  }
 }
 
 export default withSentryConfig(
