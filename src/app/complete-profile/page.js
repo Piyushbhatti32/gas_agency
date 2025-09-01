@@ -33,53 +33,136 @@ export default function CompleteProfile() {
     setError("")
     
     const formData = new FormData(e.currentTarget)
-    const profileData = {
-      phoneNumber: formData.get("phoneNumber"),
-      alternateNumber: formData.get("alternateNumber"),
-      dateOfBirth: formData.get("dateOfBirth"),
-      aadharNumber: formData.get("aadharNumber"),
-      address: formData.get("address"),
-      city: formData.get("city"),
-      state: formData.get("state"),
-      pincode: formData.get("pincode"),
-      landmark: formData.get("landmark")
-    }
+    
+    // Basic form validation
+    const phoneNumber = formData.get("phoneNumber")?.trim()
+    const dateOfBirth = formData.get("dateOfBirth")?.trim()
+    const aadharNumber = formData.get("aadharNumber")?.trim()
+    const address = formData.get("address")?.trim()
+    const city = formData.get("city")?.trim()
+    const state = formData.get("state")?.trim()
+    const pincode = formData.get("pincode")?.trim()
 
     // Validate required fields
-    if (!profileData.phoneNumber || !profileData.address || !profileData.city || !profileData.state || !profileData.pincode) {
+    if (!phoneNumber || !address || !city || !state || !pincode) {
       setError("Please fill in all required fields")
       setIsLoading(false)
       return
     }
 
+    // Validate phone number format (10 digits)
+    if (!/^\d{10}$/.test(phoneNumber)) {
+      setError("Please enter a valid 10-digit phone number")
+      setIsLoading(false)
+      return
+    }
+
+
+
+    // Validate Aadhar number if provided (12 digits)
+    if (aadharNumber && !/^\d{12}$/.test(aadharNumber)) {
+      setError("Please enter a valid 12-digit Aadhar number")
+      setIsLoading(false)
+      return
+    }
+
+    // Validate pincode (6 digits)
+    if (!/^\d{6}$/.test(pincode)) {
+      setError("Please enter a valid 6-digit pincode")
+      setIsLoading(false)
+      return
+    }
+
+    // Create profile data object
+    const profileData = {
+      phoneNumber,
+      dateOfBirth: dateOfBirth || undefined,
+      aadharNumber: aadharNumber || undefined,
+      address,
+      city,
+      state,
+      pincode
+    }
+
     try {
+      const requestData = { userId: user.id, ...profileData };
+      console.log("Sending profile data:", requestData);
+      console.log("Request body:", JSON.stringify(requestData, null, 2));
+      
       const response = await fetch("/api/user/complete-profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, ...profileData })
-      })
+        body: JSON.stringify(requestData)
+      });
 
-      const data = await response.json()
+      let data;
+      try {
+        data = await response.json();
+        console.log("Server response:", {
+          status: response.status,
+          statusText: response.statusText,
+          data,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+      } catch (parseError) {
+        console.error("Error parsing server response:", parseError);
+        console.error("Raw response text:", await response.text());
+        throw new Error("Invalid server response");
+      }
 
       if (response.ok) {
+        if (!data.user) {
+          console.error("Missing user data in successful response:", data);
+          throw new Error("Invalid server response format");
+        }
+
         toast({
           title: "Profile completed successfully!",
           description: "Your profile has been updated.",
-        })
+        });
         
         // Update localStorage with new user data
-        const updatedUser = { ...user, ...profileData }
-        localStorage.setItem("user", JSON.stringify(updatedUser))
+        const updatedUser = { ...user, ...data.user }; // Use the user data from the server response
+        localStorage.setItem("user", JSON.stringify(updatedUser));
         
         // Redirect to dashboard
         setTimeout(() => {
-          window.location.href = "/dashboard"
-        }, 1500)
+          window.location.href = "/dashboard";
+        }, 1500);
       } else {
-        setError(data.error || "Failed to update profile")
+        console.error("Profile update failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          data: data,
+          error: data?.error,
+          message: data?.message
+        });
+        
+        // Try to get a meaningful error message
+        let errorMessage = "Failed to update profile. Please check your information and try again.";
+        if (data?.error) {
+          errorMessage = data.error;
+        } else if (data?.message) {
+          errorMessage = data.message;
+        } else if (response.status === 400) {
+          errorMessage = "Invalid data provided. Please check your information.";
+        } else if (response.status === 404) {
+          errorMessage = "User not found. Please try logging in again.";
+        } else if (response.status === 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+        
+        setError(errorMessage);
       }
     } catch (err) {
-      setError("Network error. Please try again.")
+      console.error("Profile update error:", {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+      setError(err.message === "Invalid server response" || err.message === "Invalid server response format" 
+        ? "Server error. Please try again later." 
+        : "Network error. Please check your connection and try again.");
     } finally {
       setIsLoading(false)
     }
@@ -156,16 +239,7 @@ export default function CompleteProfile() {
                       />
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="alternateNumber">Alternate Number</Label>
-                      <Input
-                        id="alternateNumber"
-                        name="alternateNumber"
-                        type="tel"
-                        placeholder="Enter alternate number"
-                        defaultValue={user.alternateNumber || ""}
-                      />
-                    </div>
+
                   </div>
                 </div>
 
@@ -286,16 +360,7 @@ export default function CompleteProfile() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="landmark">Landmark</Label>
-                    <Input
-                      id="landmark"
-                      name="landmark"
-                      type="text"
-                      placeholder="Enter nearby landmark (optional)"
-                      defaultValue={user.landmark || ""}
-                    />
-                  </div>
+
                 </div>
 
                 <Button 

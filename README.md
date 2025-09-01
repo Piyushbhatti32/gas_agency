@@ -1,180 +1,385 @@
 # Gas Agency Management System
 
-A modern web application for managing gas cylinder bookings, agencies, and user interactions. Built with Next.js and Prisma.
+A modern, responsive web application for managing gas cylinder bookings, agencies, and user interactions. Built with Next.js, Prisma, and TailwindCSS.
 
-## Features
+![Gas Agency System](https://img.shields.io/badge/Next.js-15.3.5-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)
+![Prisma](https://img.shields.io/badge/Prisma-6.11.1-2D3748?style=for-the-badge&logo=prisma)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
 
-### For Users
-- 📱 User registration and profile management
-- 🛒 Book gas cylinders with multiple payment options
-  - Cash on Delivery (COD)
-  - Online Payment (Razorpay)
-  - Paytm QR
-- 📊 Track cylinder bookings and delivery status
-- 🔔 Real-time notifications for booking updates
-- 📋 View booking history and remaining barrel quota
+## 🚀 Features
 
-### For Agencies
-- � Agency registration and profile management
-- � Manage cylinder deliveries and inventory
-- � Track customer bookings and history
-- � Dashboard with business analytics
-- � Booking status management
+### 👥 For Users
+- 📱 **User Registration & Profile Management** - Complete user onboarding with profile completion
+- 🛒 **Gas Cylinder Booking** - Multiple payment options:
+  - 💰 Cash on Delivery (COD)
+  - 💳 Online Payment (Razorpay)
+  - 📱 Paytm QR
+- 📊 **Booking Tracking** - Real-time status updates and delivery tracking
+- 🔔 **Smart Notifications** - Real-time notifications for booking updates
+- 📋 **Booking History** - Complete history with remaining barrel quota
+- 📱 **Responsive Design** - Works perfectly on all devices
 
-### For Administrators
-- � User management (block/unblock, reset barrels, delete)
-- 🏢 Agency management and oversight
-- 📢 Send notifications to users
-- � System-wide analytics and monitoring
-- 🔧 Configuration management
+### 🏢 For Agencies
+- 🏢 **Agency Registration** - Complete agency onboarding process
+- 📦 **Inventory Management** - Track cylinder deliveries and stock
+- 👥 **Customer Management** - Manage customer bookings and history
+- 📊 **Business Analytics** - Comprehensive dashboard with insights
+- 🔄 **Status Management** - Update booking statuses in real-time
 
-## Tech Stack
+### 👨‍💼 For Administrators
+- 👥 **User Management** - Block/unblock users, reset barrels, delete accounts
+- 🏢 **Agency Oversight** - Manage and monitor all agencies
+- 📢 **Notification System** - Send system-wide notifications
+- 📈 **Analytics Dashboard** - System-wide analytics and monitoring
+- ⚙️ **Configuration Management** - System settings and preferences
 
-- **Frontend**: Next.js App Router, React, TailwindCSS, shadcn/ui
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: SQLite (easily upgradable to PostgreSQL/MySQL)
-- **Authentication**: Custom JWT-based auth
-- **Payment**: Razorpay integration
-- **UI Components**: 
-  - Dialog
-  - ScrollArea
-  - Tabs
-  - Cards
-  - Forms
-  - Notifications
-  - And more...
+## 🛠️ Tech Stack
 
-## Getting Started
+### Frontend
+- **Next.js 15** - React framework with App Router
+- **React 19** - Latest React with concurrent features
+- **TailwindCSS 4** - Utility-first CSS framework
+- **shadcn/ui** - Beautiful, accessible UI components
+- **Framer Motion** - Smooth animations and transitions
+
+### Backend
+- **Next.js API Routes** - Serverless API endpoints
+- **Prisma ORM** - Type-safe database client
+- **PostgreSQL** - Robust relational database
+- **JWT Authentication** - Secure token-based auth
+
+### Development Tools
+- **ESLint** - Code linting and formatting
+- **Jest** - Unit and integration testing
+- **TypeScript** - Type safety (optional)
+- **Husky** - Git hooks for code quality
+
+## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- **Node.js 18+** - [Download here](https://nodejs.org/)
+- **npm or yarn** - Package managers
+- **PostgreSQL** - Database server
+- **Git** - Version control
 
-### Installation
+### Quick Start
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/gas_agency.git
-cd gas_agency
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/gas_agency.git
+   cd gas_agency
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local` with your configuration:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://username:password@localhost:5432/gas_agency"
+   
+   # JWT Secret
+   JWT_SECRET="your-super-secret-jwt-key"
+   
+   # Razorpay (for payments)
+   RAZORPAY_KEY_ID="your-razorpay-key-id"
+   RAZORPAY_KEY_SECRET="your-razorpay-secret"
+   
+   # App Configuration
+   NEXT_PUBLIC_APP_URL="http://localhost:3000"
+   NODE_ENV="development"
+   ```
+
+4. **Set up the database**
+   ```bash
+   # Generate Prisma client
+   npx prisma generate
+   
+   # Run database migrations
+   npx prisma migrate dev
+   
+   # Seed the database (optional)
+   npx prisma db seed
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🏗️ Project Structure
+
+```
+gas_agency/
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── admin/             # Admin dashboard and features
+│   │   ├── agency/            # Agency dashboard and features
+│   │   ├── api/               # API routes
+│   │   │   ├── auth/          # Authentication endpoints
+│   │   │   ├── admin/         # Admin management endpoints
+│   │   │   ├── agency/        # Agency management endpoints
+│   │   │   ├── booking/       # Booking management endpoints
+│   │   │   ├── notifications/ # Notification endpoints
+│   │   │   ├── payment/       # Payment processing endpoints
+│   │   │   └── user/          # User management endpoints
+│   │   ├── complete-profile/  # User profile completion
+│   │   ├── dashboard/         # User dashboard
+│   │   ├── history/           # Booking history
+│   │   └── layout.js          # Root layout
+│   ├── components/            # React components
+│   │   ├── ui/               # Reusable UI components
+│   │   ├── LoadingSpinner.jsx # Loading components
+│   │   └── Navigation.jsx    # Main navigation
+│   ├── hooks/                # Custom React hooks
+│   │   ├── useApi.js         # API call hook
+│   │   └── useLocalStorage.js # Local storage hook
+│   └── lib/                  # Utilities and configurations
+│       ├── constants.js      # Application constants
+│       ├── db.js            # Prisma client
+│       ├── errorHandler.js  # Error handling system
+│       ├── utils.js         # Utility functions
+│       └── razorpay.js      # Payment integration
+├── prisma/                   # Database schema and migrations
+│   ├── schema.prisma        # Database schema
+│   └── migrations/          # Database migrations
+├── public/                  # Static assets
+├── tests/                   # Test files
+├── .env.example            # Environment variables template
+├── .eslintrc.js           # ESLint configuration
+├── jest.config.js         # Jest configuration
+├── next.config.js         # Next.js configuration
+├── package.json           # Dependencies and scripts
+├── tailwind.config.js     # TailwindCSS configuration
+└── README.md              # This file
 ```
 
-2. Install dependencies:
+## 🔧 Available Scripts
+
 ```bash
-npm install
-# or
-yarn install
-```
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
 
-3. Set up environment variables:
-```bash
-cp .env.example .env
-```
-
-4. Set up the database:
-```bash
-npx prisma migrate deploy
-```
-
-5. Run the development server:
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-### Environment Variables
-
-Required environment variables in `.env`:
-
-```env
 # Database
-DATABASE_URL="file:./custom.db"
+npm run db:generate  # Generate Prisma client
+npm run db:migrate   # Run database migrations
+npm run db:push      # Push schema changes
+npm run db:reset     # Reset database
 
-# JWT
-JWT_SECRET=your-jwt-secret
+# Testing
+npm run test         # Run tests
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage # Run tests with coverage
 
-# Razorpay (for payments)
-RAZORPAY_KEY_ID=your-key-id
-RAZORPAY_KEY_SECRET=your-key-secret
+# Linting
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint errors
 
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── admin/             # Admin dashboard and features
-│   ├── agency/            # Agency dashboard and features
-│   ├── api/               # API routes
-│   └── user/              # User pages
-├── components/            # React components
-│   ├── ui/               # UI components
-│   └── Navigation.jsx    # Main navigation
-├── hooks/                # Custom React hooks
-└── lib/                  # Utilities and configurations
-    ├── db.js            # Prisma client
-    ├── email.js         # Email utilities
-    └── razorpay.js      # Payment integration
+# Type checking
+npm run type-check   # Check TypeScript types
 ```
 
-## API Routes
+## 🌐 API Documentation
 
-- `/api/auth/*` - Authentication endpoints
-- `/api/admin/*` - Admin management endpoints
-- `/api/agency/*` - Agency management endpoints
-- `/api/booking/*` - Booking management endpoints
-- `/api/notifications/*` - Notification endpoints
-- `/api/payment/*` - Payment processing endpoints
-- `/api/user/*` - User management endpoints
+### Authentication Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/refresh` - Refresh JWT token
 
-## Production Deployment
+### User Management
+- `GET /api/user/profile` - Get user profile
+- `PUT /api/user/complete-profile` - Update user profile
+- `GET /api/user/bookings` - Get user bookings
+- `POST /api/user/bookings` - Create new booking
 
-1. Build the application:
+### Agency Management
+- `GET /api/agency/profile` - Get agency profile
+- `PUT /api/agency/profile` - Update agency profile
+- `GET /api/agency/bookings` - Get agency bookings
+- `PUT /api/agency/bookings/:id/status` - Update booking status
+
+### Admin Management
+- `GET /api/admin/users` - Get all users
+- `PUT /api/admin/users/:id/block` - Block/unblock user
+- `GET /api/admin/agencies` - Get all agencies
+- `POST /api/admin/notifications` - Send notification
+
+### Payment Processing
+- `POST /api/payment/create-order` - Create payment order
+- `POST /api/payment/verify` - Verify payment
+- `GET /api/payment/history` - Get payment history
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. **Connect your repository**
+   - Push your code to GitHub
+   - Connect your repository to Vercel
+
+2. **Configure environment variables**
+   - Add all environment variables in Vercel dashboard
+   - Set `NODE_ENV=production`
+
+3. **Deploy**
+   ```bash
+   npm run build
+   ```
+
+### Netlify
+
+1. **Build settings**
+   ```bash
+   Build command: npm run build
+   Publish directory: .next
+   ```
+
+2. **Environment variables**
+   - Add all environment variables in Netlify dashboard
+
+### Docker
+
+1. **Build the image**
+   ```bash
+   docker build -t gas-agency .
+   ```
+
+2. **Run the container**
+   ```bash
+   docker run -p 3000:3000 gas-agency
+   ```
+
+### Manual Deployment
+
+1. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+2. **Start the production server**
+   ```bash
+   npm start
+   ```
+
+## 🔒 Security Considerations
+
+- 🔐 **JWT Authentication** - Secure token-based authentication
+- 🔒 **Input Validation** - Comprehensive validation on all endpoints
+- 🛡️ **SQL Injection Protection** - Prisma ORM prevents SQL injection
+- 🔐 **Password Hashing** - bcrypt for secure password storage
+- 📝 **API Logging** - Comprehensive request/response logging
+- 🚫 **Rate Limiting** - Protection against brute force attacks
+- 🔒 **Environment Variables** - Secure configuration management
+- 🔐 **HTTPS Only** - Force HTTPS in production
+
+## 🧪 Testing
+
+### Running Tests
 ```bash
-npm run build
-# or
-yarn build
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- --testPathPattern=user.test.js
 ```
 
-2. Start the production server:
-```bash
-npm start
-# or
-yarn start
+### Test Structure
+```
+tests/
+├── unit/              # Unit tests
+├── integration/       # Integration tests
+├── e2e/              # End-to-end tests
+└── fixtures/         # Test data
 ```
 
-## Security Considerations
+## 📊 Performance Optimization
 
-- 🔒 All sensitive routes are protected with authentication
-- �️ Input validation on all endpoints
-- 🔐 Secure password hashing with bcrypt
-- 📝 Comprehensive API logging
-- 🚫 Rate limiting on sensitive endpoints
-- 🔒 Protected environment variables
+- ⚡ **Code Splitting** - Automatic code splitting with Next.js
+- 🖼️ **Image Optimization** - Next.js Image component
+- 📦 **Bundle Analysis** - Analyze bundle size
+- 🗄️ **Database Optimization** - Indexed queries and efficient schemas
+- 🚀 **Caching** - Redis caching for frequently accessed data
+- 📱 **PWA Support** - Progressive Web App capabilities
 
-## Database Migrations
+## 🤝 Contributing
 
-Run migrations in development:
-```bash
-npx prisma migrate dev
-```
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. **Push to the branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Create a Pull Request**
 
-Apply migrations in production:
-```bash
-npx prisma migrate deploy
-```
+### Development Guidelines
+- Follow the existing code style
+- Write tests for new features
+- Update documentation
+- Ensure all tests pass
+- Follow conventional commits
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
+## 📝 License
 
 This project is proprietary and confidential. All rights reserved.
 
-## Support
+## 🆘 Support
 
-For support, please contact your system administrator.
+### Getting Help
+- 📧 **Email**: support@gasagency.com
+- 📞 **Phone**: +1-800-GAS-HELP
+- 💬 **Live Chat**: Available on the website
+
+### Documentation
+- 📚 **API Docs**: `/api/docs`
+- 🎥 **Video Tutorials**: Available in the help section
+- 📖 **User Guide**: Comprehensive user documentation
+
+### Bug Reports
+Please report bugs using the GitHub issue tracker with:
+- Clear description of the issue
+- Steps to reproduce
+- Expected vs actual behavior
+- Browser and OS information
+
+## 🏆 Acknowledgments
+
+- **Next.js Team** - For the amazing framework
+- **Prisma Team** - For the excellent ORM
+- **TailwindCSS Team** - For the utility-first CSS framework
+- **shadcn/ui** - For the beautiful UI components
+- **All Contributors** - For their valuable contributions
+
+---
+
+**Made with ❤️ by the Gas Agency Team**

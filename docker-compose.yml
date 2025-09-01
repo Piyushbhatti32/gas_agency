@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: gas_agency_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gas_agency
+      POSTGRES_USER: gas_user
+      POSTGRES_PASSWORD: gas_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - gas_agency_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gas_user -d gas_agency"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache (for session storage and caching)
+  redis:
+    image: redis:7-alpine
+    container_name: gas_agency_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - gas_agency_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Gas Agency Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gas_agency_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://gas_user:gas_password@postgres:5432/gas_agency
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      RAZORPAY_KEY_ID: your-razorpay-key-id
+      RAZORPAY_KEY_SECRET: your-razorpay-secret
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gas_agency_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy (for production)
+  nginx:
+    image: nginx:alpine
+    container_name: gas_agency_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    networks:
+      - gas_agency_network
+    profiles:
+      - production
+
+  # Development version (with hot reload)
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: gas_agency_app_dev
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://gas_user:gas_password@postgres:5432/gas_agency
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret
+      RAZORPAY_KEY_ID: test-key-id
+      RAZORPAY_KEY_SECRET: test-secret
+      NEXT_PUBLIC_APP_URL: http://localhost:3001
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gas_agency_network
+    profiles:
+      - development
+
+  # Database migration service
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gas_agency_migrate
+    environment:
+      DATABASE_URL: postgresql://gas_user:gas_password@postgres:5432/gas_agency
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gas_agency_network
+    command: npx prisma migrate deploy
+    profiles:
+      - setup
+
+  # Database seeding service
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gas_agency_seed
+    environment:
+      DATABASE_URL: postgresql://gas_user:gas_password@postgres:5432/gas_agency
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gas_agency_network
+    command: npx prisma db seed
+    profiles:
+      - setup
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  gas_agency_network:
+    driver: bridge

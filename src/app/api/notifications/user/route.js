@@ -14,6 +14,12 @@ export async function GET(request) {
       )
     }
 
+    console.log("Fetching notifications for userId:", userId);
+    
+    // Check database connection
+    await db.$queryRaw`SELECT 1`;
+    console.log("Database connection successful");
+
     // Get active notifications for the user
     const notifications = await db.notification.findMany({
       where: {
@@ -35,7 +41,9 @@ export async function GET(request) {
           }
         }
       }
-    })
+    });
+    
+    console.log("Found notifications:", notifications.length);
 
     // Transform notifications to include read status
     const transformedNotifications = notifications.map(notification => ({

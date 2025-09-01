@@ -19,35 +19,56 @@ export function NotificationCenter() {
 
   const fetchNotifications = async () => {
     try {
-      console.log("Fetching notifications...")
+      console.log("Fetching notifications...");
       // Get user from localStorage
-      const userData = localStorage.getItem('user')
+      const userData = localStorage.getItem('user');
       if (!userData) {
-        console.log("No user data found in localStorage")
-        return
+        console.log("No user data found in localStorage");
+        return;
       }
 
-      const user = JSON.parse(userData)
-      console.log("User ID:", user.id)
+      const user = JSON.parse(userData);
+      if (!user || !user.id) {
+        console.error("Invalid user data in localStorage");
+        return;
+      }
+      console.log("User ID:", user.id);
       
-      const response = await fetch(`/api/notifications/user?userId=${user.id}`)
-      console.log("Response status:", response.status)
+      const response = await fetch(`/api/notifications/user?userId=${user.id}`);
+      console.log("Response status:", response.status);
       
-      const data = await response.json()
-      console.log("Notifications response:", data)
-      
-      if (!response.ok) {
-        console.error("Error fetching notifications:", data.error)
-        return
+      let data;
+      try {
+        data = await response.json();
+        console.log("Notifications response:", data);
+      } catch (parseError) {
+        console.error("Error parsing notifications response:", parseError);
+        throw new Error("Invalid server response");
       }
       
-      setNotifications(data.notifications || [])
-      const unreadCount = data.notifications?.filter(n => !n.isRead).length || 0
-      console.log("Total notifications:", data.notifications?.length)
-      console.log("Unread notifications:", unreadCount)
-      setUnread(unreadCount)
+      if (!response.ok) {
+        const errorMessage = data?.error || "Unknown error occurred";
+        console.error("Error fetching notifications:", errorMessage);
+        if (data?.details) {
+          console.error("Error details:", data.details);
+        }
+        throw new Error(errorMessage);
+      }
+      
+      if (!Array.isArray(data.notifications)) {
+        console.error("Invalid notifications data format:", data);
+        throw new Error("Invalid notifications format");
+      }
+      
+      setNotifications(data.notifications);
+      const unreadCount = data.notifications.filter(n => !n.isRead).length;
+      console.log("Total notifications:", data.notifications.length);
+      console.log("Unread notifications:", unreadCount);
+      setUnread(unreadCount);
     } catch (error) {
-      console.error("Failed to fetch notifications:", error)
+      console.error("Failed to fetch notifications:", error);
+      setNotifications([]);
+      setUnread(0);
     }
   }
 
