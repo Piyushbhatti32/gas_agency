@@ -144,7 +144,7 @@ export function debounce(func, wait) {
 }
 
 /**
- * Throttle function
+ * Throttle function execution
  * @param {Function} func - Function to throttle
  * @param {number} limit - Time limit in milliseconds
  * @returns {Function} Throttled function
@@ -152,12 +152,9 @@ export function debounce(func, wait) {
 export function throttle(func, limit) {
   let inThrottle;
   
-  return function() {
-    const args = arguments;
-    const context = this;
-    
+  return function(...args) {
     if (!inThrottle) {
-      func.apply(context, args);
+      func.apply(this, args);
       inThrottle = true;
       setTimeout(() => inThrottle = false, limit);
     }

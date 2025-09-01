@@ -1,27 +1,15 @@
 {
   "version": 2,
   "name": "gas-agency-system",
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/server.js"
-    }
-  ],
+  "framework": "nextjs",
   "env": {
     "NODE_ENV": "production"
   },
   "functions": {
-    "server.js": {
+    "app/**/*.js": {
+      "maxDuration": 30
+    },
+    "pages/**/*.js": {
       "maxDuration": 30
     }
   },

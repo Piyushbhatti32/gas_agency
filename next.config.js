@@ -7,12 +7,15 @@ const nextConfig = {
       enabled: true
     },
   },
-  // Vercel settings
-  output: 'standalone',
-  // Allow database file to be copied to output
+  // Standard Next.js config for Vercel
   typescript: {
     ignoreBuildErrors: true
   },
+  // Ensure proper image optimization
+  images: {
+    domains: ['localhost'],
+    unoptimized: false
+  }
 }
 
 export default withSentryConfig(
